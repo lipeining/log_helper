@@ -45,15 +45,16 @@ const contract = {
         createTime: 2334324342,
         disable: 0,
     },
-    // ext: [
-    //     [1,2,3,4,5],
-    //     [6,7,8,9,10],
-    // ],
-    // files: [
-    //     [
-    //         {fileId: 1, fileName: 'filesName'}
-    //     ]
-    // ],
+    ext: [
+        [1,2,3,4,5],
+        [6,7,8,9,10],
+    ],
+    files: [
+        [
+            {fileId: 1, fileName: 'filesName'}
+        ]
+    ],
+    oneDirection: [1,2,3],
     showAttrs: ['contractName', 'createTime', 'paymentJson', 'ConFirst', 'contentFiles'],
     translate : {
         contractName: '合同名称',
@@ -62,6 +63,7 @@ const contract = {
         amountType: '金额类型',
         balanceAmount: '余款金额',
         contentFiles: '合同正文',
+        oneDirection: '一维数组',
         // files: '[[{}]]文件', // 都会展开为1维
         // ext: '[[]]二维数组',// 都会展开为1维
         fileName: '文件名称',

@@ -222,4 +222,4 @@ function flattenArray(arr,options={}) {
 }
 
 
-
+module.exports = {diffObject, flattenObject};

@@ -225,7 +225,7 @@ function _genArrDiff(values, options={}) {
             return _.isEqual(a,b);
         }
     });
-    const edit = _.intersectionWith(before, after, (a,b)=>{
+    const editArr = _.intersectionWith(before, after, (a,b)=>{
         if(childKey.length) {
             return _.isEqual(_.pick(a, childKey), _.pick(b, childKey));
         } else {
@@ -238,6 +238,23 @@ function _genArrDiff(values, options={}) {
         } else {
             return _.isEqual(a,b);
         }
+    });
+    if(!childKey.length) {
+        return {add ,edit: editArr, del};
+    }
+    const edit = editArr.map(o => {
+        const beforeObj = before.find(b=>{
+            return _.isEqual(_.pick(o, childKey), _.pick(b, childKey));
+        });
+        const afterObj = after.find(a=>{
+            return _.isEqual(_.pick(o, childKey), _.pick(a, childKey));
+        });
+        const kPath = filterAttr._path;
+        const newDiffAttrs = diffAttrs.filter(d=>{
+            return d.startsWith(kPath);
+        });
+        const objArr = _genObjDiff({before: beforeObj, after: afterObj}, {depth: depth+1, translate, _parent: kPath, diffAttrs: newDiffAttrs, _define});
+        return {path: kPath, name: Object.values(_.pick(beforeObj, childKey)).join('-'), children: objArr};
     });
     return {add, edit, del};
 }

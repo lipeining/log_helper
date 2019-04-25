@@ -16,6 +16,7 @@ function parseAttr(values, options={parent : '', depth: 0}) {
     const {parent, depth} = options;
     for(const key of keys) {
         if(_.isArray(values[key])) {
+            // 这里考虑用户手动指定 Array 的主键，用于对比
             res.push({_path: `${parent}.${key}`, _name: `${key}`, _depth: depth, _type: 'Array' });
             const objArr = parseArr(values[key], {parent: `${parent}.${key}`, depth: depth+1});
             for(const oa of objArr) {

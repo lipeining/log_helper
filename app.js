@@ -12,8 +12,10 @@ const viewPath = path.join(__dirname, 'views');
 if(!fs.existsSync(viewPath)) {
     fs.mkdirSync(viewPath);
 }
-
-
+// const { doddiff, addedDiff, deletedDiff, detailedDiff, updatedDiff } = require("deep-object-diff");
+var doddiff = require("deep-object-diff").diff;
+const {diffObject, flattenObject} = require('./diff_helper');
+var dddiff = require('deep-diff').diff;
 app.set('view engine', 'ejs');
 
 app.get('/helper', (req, res) => {
@@ -46,7 +48,7 @@ app.get('/helper', (req, res) => {
         // console.log(targetArr);
         const _define = objParseHelper.parseAttr(target, {parent: 'target', depth: 0});
         const diffAttrs = _define.filter(d=>{
-            return ['target.contentFiles.$.contractFileId', 'target.contentFiles.$.createTime'].indexOf(d._path) === -1;
+            return ['target.contentFiles.$.contractFileId', 'target.contentFiles.$.createTime', 'target.contentFiles.$.deleteTime'].indexOf(d._path) === -1;
         }).map(d=>{
             return d._path;
         });
@@ -55,11 +57,24 @@ app.get('/helper', (req, res) => {
         after.contractName = 'edit-name';
         after.paymentJson.amountType = 2;
         after.paymentJson.balancePayment.circle = 2;
+        after.oneDirection = [4,5,6];
         after.contentFiles[0].fileName = 'edit-file';
-        const diffArr = ejsHelper.genObjDiff({before, after}, {diffAttrs, translate, _parent: 'target', _define, depth: 0 });
-        console.log(JSON.stringify(diffArr, null ,2));
+        after.contentFiles[1].User.nickName = 'file-user-2';
+        after.ext[0] = [1,2,3,4,6];
+        after.files[0].push({fileId: 2, fileName: 'filesName2'});
+        after.paymentJson.balanceTime = 1000;
+        // const diffArr = ejsHelper.genObjDiff({before, after}, {diffAttrs, translate, _parent: 'target', _define, depth: 0 });
+        // console.log(JSON.stringify(diffArr, null ,2));
+        const dodObj = doddiff(before, after);
+        console.log(JSON.stringify(dodObj, null , 2));
+        // console.log(flattenObject(dodObj, { translate}));
+        const ddObj = dddiff(before, after);
+        console.log(JSON.stringify(ddObj, null , 2));
+        result = ejs.render(JSON.stringify(ddObj, null ,2));
+        // result = ejs.render(ddObj.join('\n'), {target});
+        // console.log(flattenObject(ddObj, { translate}));
         // console.log(_define);
-        result = ejs.render(targetArr.join('\n'), {target});
+        // result = ejs.render(targetArr.join('\n'), {target});
     }
     
     // const fileName = `str_${id}.ejs`;
